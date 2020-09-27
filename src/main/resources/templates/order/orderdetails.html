@@ -1,0 +1,233 @@
+<!-- import css-->
+<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" xmlns:th="http://www.w3.org/1999/xhtml">
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/plugin/iCheck/skins/flat/green.css" rel="stylesheet">
+<!-- Datatables -->
+<link href="/plugin/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+<style type="text/css">
+    #phoneImg ul a img {
+        margin-top: 0px;
+    }
+
+    .item {
+        font-size: 16px;
+    }
+</style>
+
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="">
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>订单详情</h2>
+                        <a href="/order/order" class="btn btn-success btn-xs" style="float: right">
+                            <span style="color: white">返回订单</span>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+                        <table class="table table-striped projects">
+                            <thead>
+                            <tr>
+                                <th style="width: 10%">订购时间</th>
+                                <th style="width: 10%">订单编号</th>
+                                <th style="width: 10%">图片</th>
+                                <th style="width: 15%">商品名称</th>
+                                <th>版本型号</th>
+                                <th>数量</th>
+                                <th>总价</th>
+                                <th>订单状态</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <input type="hidden" name="orderCode" th:value="${orderCode}">
+                            </tbody>
+                        </table>
+
+
+                        <!-- 订单详情 -->
+                        <div class="col-md-12">
+                            <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                       aria-controls="home" aria-selected="true">收货人信息</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                       aria-controls="profile" aria-selected="false">配送信息</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                                       aria-controls="contact" aria-selected="false">付款信息</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <!--  收货人信息  -->
+                                <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                     aria-labelledby="home-tab">
+                                    <div class="item">
+                                        <label class="col-sm-1 control-label">收货人：</label>
+                                        <div class="info-rcol"><span shiro:principal property="username" /></div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-1 control-label">地址：</label>
+                                        <div id="address" class="info-rcol"></div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-1 control-label">手机：</label>
+                                        <div id="phone" class="info-rcol"></div>
+                                    </div>
+                                </div>
+
+                                <!--  配送信息  -->
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">配送方式：</label>
+                                        <div class="info-rcol">京东快递</div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">运费：</label>
+                                        <div class="info-rcol">￥<span>0.00</span></div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">期望送货日期：</label>
+                                        <div class="info-rcol">2020-08-29</div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">期望配送时间：</label>
+                                        <div class="info-rcol">09:00-15:00</div>
+                                    </div>
+                                </div>
+
+                                <!--  付款信息  -->
+                                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">付款方式：</label>
+                                        <div class="info-rcol">在线支付</div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">付款时间：</label>
+                                        <div id="buyTime" class="info-rcol"></div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">商品总额：</label>
+                                        <div class="info-rcol">￥<span id="totalMoney"></span></div>
+                                    </div>
+                                    <div class="item">
+                                        <label class="col-sm-2 control-label">应支付金额：</label>
+                                        <div class="info-rcol">￥<span id="payMoney"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+
+
+<!-- import js-->
+<!-- FastClick -->
+<script src="/plugin/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/plugin/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="/plugin/iCheck/icheck.min.js"></script>
+<!-- Datatables -->
+<script src="/plugin/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/plugin/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/plugin/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/plugin/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/plugin/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/plugin/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/plugin/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/plugin/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="/plugin/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+
+<script>
+    var orderNumber = $("[name='orderCode']").val();
+
+    $(function () {
+        showGoods();
+    })
+
+    function showGoods() {
+        $.ajax({
+            url: "/order/getGoods",
+            type: "POST",
+            data: {"orderNumber": orderNumber},
+            dataType: "json",
+            success: function (data) {
+                var sumMoney = 0;
+                $.each(data, function (n, value) {
+                    $("tbody").append("<tr>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" + value.buyTime + "</td>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" + value.orderNumber + "</td>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" +
+                        "<a href='/order/detail?goodsId=" + value.goodsId + "&customerId=" +
+                        value.customerId + "'>" +
+                        "<img width='100' height='100' src='" + value.goodsPar.goodsImg + "'></a>" +
+                        "</td> " +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" +
+                        "<a href='/order/detail?goodsId=" + value.goodsId + "&customerId=" +
+                        value.customerId + "' style='color: blue'>" + value.goods.goodsName + "</a>" +
+                        "</td>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" + value.goodsPar.parameterName + "</td>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" + value.number + "</td>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" + parseFloat(value.totalPrice).toFixed(2) + "</td>" +
+                        "<td style='vertical-align: middle;font-size: 16px;'>" + (value.orderState == 1 ? "已下单" : "已收货") + "</td>" +
+                        "</tr>");
+
+                    if (n == 0) {
+                        $("#address").eq(n).text(value.address);
+                        $("#phone").eq(n).text((value.phone).replace((value.phone).substring(3, 7), "****"));
+                        $("#buyTime").eq(n).text(value.buyTime);
+                    }
+                    sumMoney += Number(value.totalPrice);
+                });
+                $("#totalMoney").text(parseFloat(sumMoney).toFixed(2));
+                $("#payMoney").text(parseFloat(sumMoney).toFixed(2));
+
+            },
+            error: function (data) {
+            }
+        })
+    }
+
+    // function toDetailPage(orderNumber) {
+    //     $.ajax({
+    //         url:"/order/detailPage",
+    //         type:"post",
+    //         dataType: "json",
+    //         data:{"orderNumber":orderNumber},
+    //         success:function (result) {
+    //
+    //         }
+    //     })
+    // }
+
+
+</script>

@@ -1,0 +1,481 @@
+<!-- import css-->
+<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/plugin/iCheck/skins/flat/green.css" rel="stylesheet">
+
+<!-- Datatables -->
+<link href="/plugin/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Users <small>Users list</small></h3>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <ul class="nav navbar-right panel_toolbox" style="margin-left:0; float: left;">
+                            <li><button id="addUserBtn" type="button" class="btn btn-primary"
+                                    data-toggle="modal" data-target="#addUserModal">Add</button>
+                                <!--button标签里面的 data-target 是指定对应id的模态框-->
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card-box table-responsive">
+                                    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>AdminId</th>
+                                            <th>AdminName</th>
+                                            <th>Password</th>
+                                            <th>PhoneNumber</th>
+                                            <th>Status</th>
+
+                                            <th>Operation</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="account/user/adminAdd"></div>
+<div th:replace="account/user/adminEdit"></div>
+
+<!-- FastClick -->
+<script src="/plugin/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/plugin/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="/plugin/iCheck/icheck.min.js"></script>
+
+<!-- Datatables -->
+<script src="/plugin/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/plugin/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/plugin/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/plugin/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/plugin/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/plugin/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/plugin/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/plugin/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+
+<script type="text/javascript">
+
+    var DEFAULT_PAGE_SIZE = 5;
+    $(document).ready(function() {
+        initUserTable(DEFAULT_PAGE_SIZE);
+
+        $("#addUserBtn").bind("click",function () {
+            intAddModal();
+        })
+
+        $("#insertUserBtn").bind("click",function () {
+            addUser();
+        })
+
+        $("#editUserBtn").bind("click",function () {
+            editUser();
+        })
+
+        /* 查看需改的模态框里面的名字是否在数据库已存在 */
+        $("input").change(function () {
+
+            // 获取要添加提示信息的div
+            myDiv = $(this).parent().parent().children("div.update111")
+            myDiv2 = $(this).parent().parent()
+
+            var id = $(this).attr("id");
+            var usernameHidden = $("#usernameForEditPageHidden").val();
+            var passwordHidden = $("#userPasswordForEditPageHidden").val();
+            // id为inpUserName的input框触发change事件
+
+            if (id == "userNameForAddPage") {
+                var a = $(this).val();
+                var regex = /^[a-zA-Z]\w{0,9}$/
+                if (regex.test(a)) {
+                    // myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                    // s()
+
+                    $.post("/account/user/isUserNameUsable", {username: a}, function (data) {
+                        //与 碎片header里面的名字作比较
+                        if (data.flag) {
+                            myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                            s()
+                        } else {
+                            myDiv.html('<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">用户名太受欢迎啦，请重新输入</span> ')
+                            e()
+
+                        }
+                    })
+                } else {
+                    myDiv.html(	'<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">字母数字下划线10位以内, 必须是字母开头</span> ')
+                    e()
+
+                }
+            }else if (id == "usernameForEditPage") {
+                var a = $(this).val();
+                var regex = /^[a-zA-Z]\w{0,9}$/
+                if (regex.test(a)) {
+                    // myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                    // s()
+
+                    $.post("/account/user/isUserNameUsable", {username: a}, function (data) {
+                        //与 碎片header里面的名字作比较
+                        if (data.flag || (!data.flag && a == usernameHidden)) {
+                            myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                            s()
+                        } else {
+                            myDiv.html('<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">用户名太受欢迎啦，请重新输入</span> ')
+                            e()
+
+                        }
+                    })
+                } else {
+                    myDiv.html(	'<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">字母数字下划线10位以内, 必须是字母开头</span> ')
+                    e()
+
+                }
+            }else if (id == "userPhoneNumberForEditPage" || id == "phoneNumberForAddPage") {
+                var a = $(this).val();
+                var regex = /^1[3456789]\d{9}$/
+                if (regex.test(a)) {
+                    myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                    s()
+                } else {
+                    myDiv.html(
+                        '<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">请输入正确的电话号码格式</span> '
+                    )
+                    e()
+                }
+
+            } else if (id == "passwordForAddPage") {
+                var a = $(this).val();
+                var regex = /^.{6,16}$/
+                if (regex.test(a)) {
+                    myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                    s()
+                } else {
+                    myDiv.html(
+                        '<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">任意字符, 6-16位</span> '
+                    )
+                    e()
+                }
+            }else if (id == "userPasswordForEditPage") {
+                var a = $(this).val();
+                var regex = /^.{6,16}$/
+                if (regex.test(a) || ((!regex.test(a)) && (a==passwordHidden))) {
+                    myDiv.html(' <p class="glyphicon glyphicon-ok text-success"></p>')
+                    s()
+                } else {
+                    myDiv.html(
+                        '<p class="glyphicon glyphicon-remove text-danger"></p> <span class="text-danger">任意字符, 6-16位</span> '
+                    )
+                    e()
+                }
+            }
+
+        });
+
+    });
+
+    function s() {
+        myDiv2.addClass("has-success")
+        if (myDiv2.hasClass('has-error')) {
+            myDiv2.removeClass('has-error')
+        }
+    }
+
+    function e() {
+        myDiv2.addClass("has-error")
+        if (myDiv2.hasClass('has-success')) {
+            myDiv2.removeClass('has-success')
+        }
+    }
+
+
+
+    function initUserTable(pageSize) {
+
+        $('#datatable').DataTable({
+            'paging': true, //分页
+            "serverSide": true, //开启后端分页
+            "pagingType": "full_numbers", //分页样式的类型simple/simple_numbers/full/full_numbers
+            "pageLength": pageSize, //定义初始的页长
+            "processing": true,     //加载数据时转圈圈
+            "destroy": true, //允许销毁替换，在表格重新查询时，可以自动销毁以前的data
+            'lengthChange': true, //控制是否能够调整每页的条数
+            'searching': true,
+            'data-show-refresh': true,
+            'ordering': true,
+            'autoWidth': false,
+            "ajax": function (data, callback, settings) {
+                // 从data获取查询数据
+                var columIndex = data.order[0].column;
+                var sort = data.order[0].dir;
+                var orderBy = data.columns[columIndex].name;
+                pageSize = data.length == undefined  ? pageSize : data.length;
+
+                var searchVo = {};
+                searchVo.currentPage = (data.start / pageSize) + 1;
+                searchVo.pageSize = pageSize;
+                searchVo.orderBy = orderBy;
+                searchVo.sort = sort;
+                searchVo.keyWord = data.search.value;
+
+                $.ajax({
+                    url : "/account/user/admins",
+                    type : "post",
+                    contentType: "application/json",
+                    data : JSON.stringify(searchVo),
+                    // dataType: "json",
+                    success : function (rsv) {
+
+                        var fData = {
+                            draw :0,
+                            recordsTotal: 0,
+                            recordsFiltered: 0,
+                            data: []
+                        };
+                        if (!rsv) {
+                            layer.msg("请求出错，请稍后重试",{icon: 2});
+                            callback(fData);
+                            return;
+                        };
+                        if (rsv.list == null) {
+                            $('#datatable tbody tr').remove();
+                            $('#loading').remove();
+                            callback(fData);
+                            return;
+                        }
+                        $('#loading').remove();
+                        var gearDatas = [];
+                        for (var i = 0; i < rsv.list.length; i++) {
+                            //包装行数据
+                            var rowData = new TData(rsv.list[i].userId, rsv.list[i].username,
+                                rsv.list[i].password, rsv.list[i].phoneNumber, rsv.list[i].status);
+                            // 将行数据放到数组里
+                            gearDatas.push(rowData);
+                        }
+                        fData.data = gearDatas;
+                        fData.recordsTotal = rsv.total;
+                        fData.recordsFiltered = rsv.total;
+                        callback(fData);
+                    },
+                    error : function (data) {
+                        layer.alert(data.responseText, {icon: 0});
+                    }
+                });
+            },
+            "columns": [ //定义行数据字段
+                {data: 'userId', name: "user_id", sortable: true},     /*使用驼峰法是为了后面排序时对应数据库的字段*/
+                {data: 'username', name: "username", sortable: true},  /*sortable 表示是否支持排序*/
+                {data: 'password', name: "password", sortable: true},
+                {data: 'phoneNumber', name: "phone_number", sortable: true},
+                {data: 'status', name: "status", sortable: true},
+                {data: 'operate', width: '80px', sortable: false}
+            ]
+        });
+    }
+
+    //行数据结构
+    function TData(userId, username, password, phoneNumber, status) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        if (status=="0"){
+            this.status = "离职";
+        }else {
+            this.status = "在职";
+        }
+
+        this.operate = function () {
+            return "<a href='#' class='btn_editcolor' data-toggle='modal' data-target='#userEditModal' " +
+                "onclick='initEditModal(\"" + userId + "\")'>编辑</a>&nbsp;" +
+                "<a href='javascript:void(0);' onclick='deleteUser(\"" + userId + "\")' class='btn_editcolor'>删除</a>";
+        }
+    }
+
+    function intAddModal() {
+        $(".update111").each(function () {
+            $(this).empty();
+        });
+        $("#userNameForAddPage").val("");
+        $("#passwordForAddPage").val("");
+        $("#phoneNumberForAddPage").val("");
+
+        // initRoles("rolesForAddPage","roleElementForAdd");
+    }
+    
+    function addUser() {
+        var b = true;
+        var divs = $("div.row");
+        for (var i = 0; i < divs.length; i++) {
+            if (divs.eq(i).hasClass('has-error')) {
+                b = false
+                break;
+            }
+        }
+
+        if (b){
+
+            var user = {};
+            user.username = $("#userNameForAddPage").val();
+            user.password = $("#passwordForAddPage").val();
+            user.phoneNumber = $("#phoneNumberForAddPage").val();
+
+            $.ajax({
+                url : "/account/user/admin",
+                type : "post",
+                contentType: "application/json",
+                data : JSON.stringify(user),
+                success : function (rsv) {
+                    if (rsv.status == 200) {
+                        layer.msg("操作成功！", {icon: 1});
+                        initUserTable(DEFAULT_PAGE_SIZE);
+                    } else {
+                        layer.msg(rsv.message, {icon: 2});
+                    }
+                },
+                error : function (data) {
+                    layer.msg(data.responseText, {icon: 0});
+                }
+            });
+        }  else {
+            alert("添加admin失败!")
+            window.location.reload();
+        }
+    }
+
+
+    function initEditModal(userId) {
+        // initRoles("rolesForEditPage", "roleElementForEdit");
+        $("#status0").prop('checked',false);
+        $("#status1").prop('checked',false);
+        $(".update111").each(function () {
+            $(this).empty();
+        });
+
+        $.ajax({
+            url : "/account/user/user/" + userId,
+            type : "get",
+            success : function (rsv) {
+                $("#userIdForEditPage").val(rsv.userId);
+                $("#usernameForEditPage").val(rsv.username);
+                $("#usernameForEditPageHidden").val(rsv.username);
+                $("#userPasswordForEditPage").val(rsv.password);
+                $("#userPasswordForEditPageHidden").val(rsv.password);
+                $("#userPhoneNumberForEditPage").val(rsv.phoneNumber);
+                $("#userStatusForEditPage").val(rsv.status);
+                if (rsv.status==0){
+                    $("#status0").prop("checked",true);
+                    $("#status1").prop("checked",false);
+                }else {
+                    $("#status0").prop("checked",false);
+                    $("#status1").prop("checked",true);
+                }
+
+            },
+            error : function (data) {
+                layer.msg(data.responseText, {icon: 0});
+            }
+        });
+    }
+
+
+    function editUser() {
+
+        var b = true;
+        var divs = $("div.row");
+        for (var i = 0; i < divs.length; i++) {
+            if (divs.eq(i).hasClass('has-error')) {
+                b = false
+                break;
+            }
+        }
+
+        if (b){
+            var user = {};
+            user.userId = $("#userIdForEditPage").val();
+            user.username = $("#usernameForEditPage").val();
+            user.password = $("#userPasswordForEditPage").val();
+            user.phoneNumber = $("#userPhoneNumberForEditPage").val();
+            user.status = $("input[name='status']:checked").val();
+
+            $.ajax({
+                url : "/account/user/admin",
+                type : "put",
+                contentType: "application/json",
+                data : JSON.stringify(user),
+                success : function (rsv) {
+                    if (rsv.status == 200) {
+                        layer.msg(rsv.message, {icon: 1});
+                        initUserTable(DEFAULT_PAGE_SIZE);
+                    } else {
+                        layer.msg(rsv.message, {icon: 2});
+                    }
+                },
+                error : function (data) {
+                    layer.alert(data.responseText, {icon: 0});
+                }
+            });
+        }  else {
+            window.location.reload();
+        }
+    }
+
+    function deleteUser(userId) {
+        bootbox.confirm("确定要删除吗?", function(result) {
+            if(result) {
+                $.ajax({
+                    url : "/account/user/admin/" + userId,
+                    type : "delete",
+                    success : function (data) {
+                        if (data.status == 200) {
+                            layer.msg(data.message, {icon: 1});
+                            initUserTable(DEFAULT_PAGE_SIZE);
+                        } else {
+                            window.location.href = data.object;
+                            layer.msg(data.message, {icon: 2});
+                        }
+                    },
+                    error : function (data) {
+                        layer.msg(data.responseText, {icon: 0});
+                    }
+                });
+            }
+        });
+    }
+
+</script>

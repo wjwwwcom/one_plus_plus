@@ -1,0 +1,68 @@
+<div id="userEditModal" class="modal fade bs-example-modal-lg"
+     tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">User Edit</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Admin Id</label>
+                        <div class="col-md-8">
+                            <input id="userIdForEditPage" name="userId" class="form-control"
+                                   type="text" readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Admin Name</label>
+                        <div class="col-md-8">
+                            <input id="usernameForEditPage" name="username" class="form-control"
+                                   type="text">
+                        </div>
+                        <div class="col-sm-4 update111"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Admin Password</label>
+                        <div class="col-md-8">
+                            <input id="userPasswordForEditPage" name="password" class="form-control"
+                                   type="text">
+                        </div>
+                        <div class="col-sm-4 update111"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Phone Number</label>
+                        <div class="col-md-8">
+                            <input id="userPhoneNumberForEditPage" name="phoneNumber" class="form-control"
+                                   type="text">
+                        </div>
+                        <div class="col-sm-4 update111"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-3">Account Status</label>
+                        <div class="col-md-8" >
+                            <span style="font-size:20px">账户不可用：</span><input id="status0" name="status" class="form-control"
+                                                      type="radio" value="0" style="zoom: 50%;">
+                            <span style="font-size:20px">账户可用：</span><input id="status1" name="status" class="form-control"
+                                                     type="radio" value="1" style="zoom: 50%;">
+                        </div>
+                    </div>
+                    <!-- 拿到修改之前的名字 -->
+                    <input id="usernameForEditPageHidden" type="hidden">
+                    <input id="userPasswordForEditPageHidden" type="hidden">
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="editUserBtn" type="button" class="btn btn-primary" data-dismiss="modal">Save changes
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

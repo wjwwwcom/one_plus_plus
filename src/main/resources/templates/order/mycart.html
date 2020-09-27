@@ -1,0 +1,350 @@
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/plugin/iCheck/skins/flat/green.css" rel="stylesheet">
+<div class="right_col" id="dian" role="main">
+    <div class="">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>购物车</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#"
+                                   role="button"><i class="fa fa-wrench"></i></a>
+                                <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">全选</a>
+                                    <a class="dropdown-item" href="#">删除</a>
+                                </div>
+                            </li>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+                        <p>Come On，一家加，更智能的生活，更优质的体验！</p>
+
+                        <!-- start project list -->
+                        <div style="float: left">
+                            <input id="AllCheck" onclick="allSelect()" type="checkbox"><span>全选</span>
+                        </div>
+                        <table class="table table-striped projects" id="tab">
+                            <h2 id="cartk" style="color: silver" align='center'></h2>
+                            <tbody id="tbo">
+                            </tbody>
+                        </table>
+                        <div th:replace="order/model"></div>
+                        <div style="float: left">
+                            <h2 style="color: gray">共选择商品：<span id="Allchecked">0</span></h2>
+                            <button class="btn btn-danger glyphicon glyphicon-trash " onclick="allDel()"
+                                    style="vertical-align: middle;margin:auto" type="button">删除选中
+                            </button>
+                        </div>
+                        <div style="float: right">
+                            <h2 style="color: gray">总金额：￥<span id="TotalPrice"></span></h2>
+                            <button class="btn btn-primary " type="button">继续购物</button>
+                            <button class="btn btn-info " type="button" onclick="Topayment()">结算</button>
+                        </div>
+                        <!-- end project list -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FastClick -->
+<script src="/plugin/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/plugin/nprogress/nprogress.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="/plugin/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<style>
+
+    #zf input[type="radio" ] {
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: 1px solid #999;
+    }
+
+    #zf input[type="radio" ]:checked {
+        background: url("/images/lgou.png");
+        background-size: cover;
+    }
+</style>
+<script>
+
+    $(document).ready(function () {
+        showing()
+    });
+    //获取后端数据
+    //查询
+    function showing() {
+        $.ajax({
+            url: "/order/mycarts",
+            type: "post",
+            success: function (data) {
+                if (data.status == 200) {
+                    var html = "";
+                    for (var i = 0; i < data.object.length; i++) {
+                        html += "<tr>" +
+                            "<td width='5%' style='vertical-align: middle;margin:auto'>" +
+                            "<input type='checkbox' name='acheck' value='" + data.object[i].orderId + "'>" +
+                            "<input type='hidden' value='" + data.object[i].customerId + "'></td>" +
+                            "<td width='20%'><a href='/order/detail?goodsId=" + data.object[i].goodsId + "&customerId=" +
+                            data.object[i].customerId + "'>" +
+                            "<img width='155' height='160' src='" + data.object[i].goodsPar.goodsImg + "'></a></td>" +
+                            "<td width='20%' align='center' style='vertical-align: middle;margin:auto'>" +
+                            "<h2><a href='/order/detail?goodsId=" + data.object[i].goodsId + "&customerId=" +
+                            data.object[i].customerId + "' style='color: blue'><b>" +
+                            data.object[i].goods.goodsName + "</b></a></h2>" +
+                            "<span>" + data.object[i].goodsPar.parameterName + "</span><br/></td>" +
+                            "<td width='10%' align='center' style='vertical-align: middle;margin:auto'>" +
+                            "<h2 >￥<b>" + parseFloat(data.object[i].goodsPar.goodsPrice).toFixed(2) + "</b></h2></td>" +
+                            "<td width='20%' align='center' style='vertical-align: middle;margin:auto'>" +
+                            "<div class='num-control js-num-control'>" +
+                            "<input type='button' value='+' id='add' onclick='add(this)'>" +
+                            "<input type='text' onclick='writ(this)' value='" + data.object[i].number + "' style='width: 25px'>" +
+                            "<input type='button' value='-' id='reduce' onclick='sub(this)'>" +
+                            "<input type='hidden' value='" + data.object[i].goodsPar.storage + "'></div></td>" +
+                            "<td width='15%' align='center' style='vertical-align: middle;margin:auto'>" +
+                            "<h2 style='color: gray'>￥<span id='Toprice" + data.object[i].orderId + "'>" +
+                            parseFloat(Number(data.object[i].goodsPar.goodsPrice) * Number(data.object[i].number)
+                            ).toFixed(2) + "</span></h2></td>" +
+                            "<td style='vertical-align: middle;margin:auto' align='center'>" +
+                            "<a href='javascript:void(0);' onclick='adel(" + data.object[i].orderId + ")'><i class='fa fa-trash-o'></i> 删除 </a>" +
+                            "</td>" +
+                            "</tr>"
+                    }
+                    //把拼接的html变量信息显示在id=tb的标签上
+                    $("#tbo").html(html)
+                } else {
+                    $("#cartk").text("购物车还是空的，赶紧去寻找宝贝吧！")
+                }
+            },
+            error: function (data) {
+                layer.msg("系统内部错误！", {icon: 2});
+            }
+        })
+    }
+
+    //文本框输入购买量
+    function writ(obj) {
+        $(obj).change(function () {
+            var stock = Number($(obj).parent().find("input").eq(3).val())
+            var price = Number($(obj).parent().parent().parent().find("td").eq(3).find("h2").find("b").text());
+            if ($(obj).val() < 1) {
+                var number = $(obj).val(1);
+                $(obj).parent().parent().parent().find("td").eq(5).find("h2").find("span").text(parseFloat(price).toFixed(2));
+                layer.msg("宝贝不能减少了哟！", {icon: 0});
+            } else if ($(obj).val() > stock) {
+                $(obj).val(stock);
+                layer.msg("商品库存不足！", {icon: 2});
+            } else {
+                $(obj).parent().parent().parent().find("td").eq(5).find("h2").find("span")
+                    .text(parseFloat(Number($(obj).val()) * price).toFixed(2));
+            }
+        })
+    }
+
+    //按键设置购买量开始
+    //添加操作
+    function add(obj) {
+        var number = Number($(obj).parent().find("input").eq(1).val());
+        var stock = Number($(obj).parent().find("input").eq(3).val());
+        if (number >= stock) {
+            $(obj).parent().find("input").eq(1).val(stock)
+            layer.msg("商品库存不足！", {icon: 2});
+        } else {
+            $(obj).parent().find("input").eq(1).val(number + 1);
+
+        }
+        var price = Number($(obj).parent().parent().parent().find("td").eq(3).find("h2").find("b").text());
+        $(obj).parent().parent().parent().find("td").eq(5).find("h2").find("span").text(parseFloat((number + 1) * price).toFixed(2));
+
+    }
+
+    //减少操作
+    function sub(obj) {
+        var number = Number($(obj).parent().find("input").eq(1).val());
+        var price = Number($(obj).parent().parent().parent().find("td").eq(3).find("h2").find("b").text());
+        if (number > 1) {
+            $(obj).parent().find("input").eq(1).val(number - 1);
+            $(obj).parent().parent().parent().find("td").eq(5).find("h2").find("span").text(parseFloat((number - 1) * price).toFixed(2));
+        } else {
+            $(obj).parent().find("input").eq(1).val(1);
+            $(obj).parent().parent().parent().find("td").eq(5).find("h2").find("span").text(parseFloat(price).toFixed(2));
+            layer.msg("宝贝不能减少了哟！", {icon: 0});
+        }
+    }
+
+    //按键设置购买量结束
+
+    //全选
+    var numall = 0;
+
+    function allSelect() {
+        numall = 0;
+        $("input[name='acheck']").prop("checked", $("#AllCheck").prop('checked'));
+        $("input[name='acheck']:checked").each(function () {
+            numall++;
+        })
+    }
+
+    //总金额与订购量
+    $(document).on("click", "#dian", function () {
+        var num = 0;//选中商品数
+        var allprice = 0;//总金额
+        $("input[name='acheck']:checked").each(function () {
+            allprice += Number($(this).parent().parent().find("td").eq(5).find("h2").find("span").text());
+            num++;
+        })
+        $("#TotalPrice").text(parseFloat(allprice).toFixed(2));
+        //判断是否全选
+        if (num < numall) {
+            $("#AllCheck").prop("checked", false);
+        }
+        if (numall != 0 && num == numall) {
+            $("#AllCheck").prop('checked', true)
+        }
+        //订购量
+        $("#Allchecked").text(num);
+
+
+    })
+
+
+    //跳转支付页面
+    function Topayment() {
+        var customerId = $("input[name='acheck']:checked").parent().find("input").eq(1).val();
+        $.ajax({
+            url: "/order/customer/" + customerId,
+            type: "post",
+            success: function (rs) {
+                $("#one").modal("show");
+                $("#address").text(rs.object.address);
+                $("#phone").text(rs.object.phoneNumber);
+            }, error: function (rs) {
+                layer.msg("系统内部错误，请稍后重试！", {icon: 0});
+            }
+        })
+    }
+
+    //批量结算
+    function settlement() {
+        var orderstr = "";
+        $("input[name='acheck']:checked").each(function () {
+            orderstr += $(this).val() + "," + $(this).parent().parent().find("td").eq(2).find("h2").find("a").find("b").text() + "," +
+                $(this).parent().parent().find("td").eq(4).find("div").find("input").eq(1).val() + "," +
+                $(this).parent().parent().find("td").eq(5).find("h2").find("span").text() + "," +
+                $("#address").text() + "," + $("#phone").text() + ";";
+        })
+        orderstr = orderstr + $("#TotalPrice").text();
+
+        //发送ajax请求
+        var t = $("input[type='radio']:checked").val()
+        var boo = false;
+        if (t != null && t != "") {
+            boo = true
+        }
+        if (orderstr != "0.00" && boo == true) {
+            pay(orderstr);
+        } else if (orderstr == "0.00") {
+            layer.msg("没有选择购买商品，请重新选择", {icon: 0})
+            down();
+        } else if (boo == false) {
+            layer.msg("请选择支付方式！", {icon: 0})
+        }
+
+    }
+
+    //支付操作
+    function pay(obj) {
+        if (confirm("要把宝贝拿回家了吗？请点击确认支付")) {
+            $.ajax({
+                url: "/order/purchase",
+                type: "put",
+                data: {"orderstr": obj},
+                dataType: "json",
+                success: function (data) {
+                    if (data.status = 200) {
+                        layer.msg("支付成功！宝贝正在来的路上，请耐心等待", {icon: 1})
+                        showing();
+                        down()
+                    } else {
+                        layer.msg("下单失败，请稍后再试!", {icon: 0});
+                    }
+                }
+            })
+        }
+    }
+
+    //删除
+    function adel(orderId) {
+        if (confirm("确定不要宝贝了吗？亲")) {
+            $.ajax({
+                url: "/order/dela/" + orderId,
+                type: "delete",
+                success: function (data) {
+                    if (data.status == 200) {
+                        showing();
+                    } else {
+                    }
+                },
+                error: function (data) {
+                    layer.msg("系统内部错误!", {icon: 3})
+                }
+            })
+        }
+    }
+
+    //批量删除
+    function allDel() {
+        //确认框
+        //点击确定返回的true
+        var allId = "";
+        $("input[name='acheck']:checked").each(function () {
+            allId += $(this).val() + ",";
+        })
+        if (allId == "") {
+            layer.msg("您未选中任何宝贝，是舍不得了吗？", {icon: 3})
+        } else {
+            if (confirm('确定不要这些宝贝了吗?亲', {icon: 0, title: '提示'})) {
+                //发送ajax请求
+                $.ajax({
+                    url: "/order/delall",
+                    type: "delete",
+                    data: {"doai": allId},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status = 200) {
+                            showing()
+                        } else {
+                            layer.msg("删除失败!", {icon: 2})
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    // function todetail(obj) {
+    //   $.ajax({
+    //       url:"/order/detail",
+    //       type:"get",
+    //       data:{"orderId":obj}
+    //   })
+    // }
+
+    //关闭模态框
+    function down() {
+        $("#one").modal("hide");
+    }
+
+</script>

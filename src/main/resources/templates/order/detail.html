@@ -1,0 +1,231 @@
+<!-- import css-->
+<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" xmlns:th="http://www.w3.org/1999/xhtml">
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/plugin/iCheck/skins/flat/green.css" rel="stylesheet">
+<!-- Datatables -->
+<link href="/plugin/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+<style type="text/css">
+    #phoneImg ul a img {
+        margin-top: 0px;
+    }
+</style>
+
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="">
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="x_title" id="manager">
+                        <div style="float: left">
+                            <a class="glyphicon glyphicon-arrow-left" href="javascript:window.history.back();">后退</a>
+                        </div>
+                        <div style="text-align: right">
+                            <b>我的地址:</b>
+                            <b th:text="${customer.address}"></b>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="col-md-7 col-sm-7 ">
+                            <div class="product-image">
+                                <input type="hidden" id="IMG" th:value="${imgdesc.goodsImg}">
+                                <img id="bigImg"  alt="..."/>
+                            </div>
+                            <input type="hidden" id="goodsId" th:value="${goods.goodsId}">
+                            <input type="hidden" id="customerId" th:value="${customer.userId}">
+                        </div>
+
+                        <div class="col-md-5 col-sm-5 " style="border:0px solid #e5e5e5;">
+
+                            <h1 id="goodsname" class="prod_title" th:text="${goods.goodsName}"></h1>
+
+                            <h4 id="desc" th:text="${imgdesc.desc}"></h4>
+                            <hr/>
+                            <br>
+                            <div id="phoneType" >
+                                <h2>选择版本型号</h2>
+                                <table>
+                                    <tr th:each="goodsPar : ${goodsParList}">
+                                <li>
+                                    <input type="hidden" name="goodsImg" th:value="${goodsPar.goodsImg}">
+                                    <input type="hidden" th:value="${goodsPar.parameterId}">
+                                    <button type="button" class="btn btn-default btn-lg" th:text="${goodsPar.parameterName}"
+                                            th:value="${goodsPar.goodsPrice}">
+                                    </button>
+                                </li>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br/>
+                            <hr>
+                            <div class="">
+                                <div class="product_price" th:if="${imgdesc.goodsPrice} != null">
+                                    <h1 class="price"><span th:text="${imgdesc.goodsPrice}" id="APrice"></span>￥</h1>
+                                </div>
+                            </div>
+                            <div class="">
+                                <button type="button" class="btn btn-default btn-lg"  onclick="topurchase()">购买</button>
+                                <button type="button" class="btn btn-default btn-lg" onclick="addcart()">加入购物车</button>
+                            </div>
+                            <div th:replace="order/purchasemodel"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FastClick -->
+<script src="/plugin/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/plugin/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="/plugin/iCheck/icheck.min.js"></script>
+<!-- Datatables -->
+<script src="/plugin/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/plugin/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/plugin/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/plugin/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/plugin/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/plugin/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/plugin/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/plugin/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="/plugin/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+
+
+<style>
+    .check {
+        border-color: red;
+        border-width: 2px;
+    }
+
+    #smallImg ul a img {
+        margin-top: 0px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+       $("#bigImg").attr({"src":""+$("#IMG").val()});//设置默认图片
+    });
+    $(document).on("click", "#phoneType button", function () {
+        $("#phoneType button").each(function (n, value) {
+            $(value).removeClass("check");
+        });
+        $(this).addClass("check");  // 选中添加check样式
+        var phone_img_path = $(this).parent().find("input").eq(0).val();  // 如：/images/phone/onePlus_8_Pro_cyan.png
+        var m = phone_img_path.lastIndexOf(".");    // lastIndexOf(字符串)；返回指定字符串最后出现的位置，从起始到“.”
+        var n = phone_img_path.lastIndexOf("_");    // lastIndexOf(字符串)；返回指定字符串最后出现的位置，从起始到“_”
+        var phone_type = phone_img_path.substring(n + 1, m);     // 结果： cyan
+        if (phone_type != "" && phone_type == "cyan") {
+            $("#bigImg").attr({"src":phone_img_path});
+        } else if (phone_type != "" && phone_type == "black") {
+            $("#bigImg").attr({"src":phone_img_path});
+        } else if (phone_type != "" && phone_type == "blue") {
+            $("#bigImg").attr({"src":phone_img_path});
+        }else if (phone_type != "" && phone_type == "yin") {
+            $("#bigImg").attr({"src":phone_img_path});
+        }else if (phone_type != "" && phone_type == "white") {
+            $("#bigImg").attr({"src":phone_img_path});
+        }else if (phone_type != "" && phone_type == "red") {
+            $("#bigImg").attr({"src": phone_img_path});
+        }
+        $("#APrice").text(parseFloat($(".check").val()).toFixed(2))
+    })
+    $(document).on("click", "#smallImg ul a img", function () {
+        var img_src = $(this).attr("src");
+        $("#bigImg").attr({"src": img_src});
+    })
+
+      //跳转支付页面
+    function topurchase() {
+        if ($(".check").val()!=null ){
+          $("#one").modal("show");
+        }else {
+            layer.msg("请选择你看上的宝贝参数!", {icon: 0});
+        }
+    }
+     //购买支付
+    function settleaGoods() {
+
+           if ($("input[type='radio']:checked").val()==null){
+               layer.msg("请选择支付方式！", {icon: 0})
+           }else {
+               var order = {
+                   "goodsId": $("#goodsId").val(),
+                   "parameterId": $(".check").parent().find("input").eq(1).val(),
+                   "customerId": $("#customerId").val(),
+                   "address": $("#address2").text(),
+                   "phone": $("#phone2").text(),
+                   "totalPrice": $(".check").val(),
+                   "goods.goodsName": $("#goodsname").text()
+               };
+
+               $.ajax({
+                   url: "/order/purchases",
+                   type: "post",
+                   data: order,
+                   success: function (rs) {
+                       if (rs.status = 200) {
+                           layer.msg("支付成功！宝贝正在来的路上，请耐心等待", {icon: 1})
+                           down2();
+                       } else {
+                           layer.msg("下单失败，请稍后再试!", {icon: 0});
+                       }
+                   }, error: function (rs) {
+                       layer.msg("系统内部报错，请稍后再试！", {icon: 0});
+                   }
+               })
+           }
+    }
+
+    //加入购物车
+    function addcart() {
+        if ($(".check").val()!=null ){
+            var order = {
+                "goodsId": $("#goodsId").val(),
+                "parameterId": $(".check").parent().find("input").eq(1).val(),
+                "customerId": $("#customerId").val(),
+                "address": $("#address2").text(),
+                "phone": $("#phone2").text()
+            };
+            $.ajax({
+                url: "/order/addcart",
+                type: "post",
+                data: order,
+                success: function (rs) {
+                    if (rs.status = 200) {
+                        layer.msg("宝贝已经在购物车了，快去看看吧！", {icon: 1})
+                        down2();
+                    } else {
+                        layer.msg("加入失败，请稍后再试!", {icon: 0});
+                    }
+                }, error: function (rs) {
+                    layer.msg("系统内部报错，请稍后再试！", {icon: 0});
+                }
+            })
+        }else {
+            layer.msg("请选择你看上的宝贝参数!", {icon: 0});
+        }
+    }
+    //关闭模态框
+    function down2() {
+        $("#one").modal("hide");
+    }
+</script>

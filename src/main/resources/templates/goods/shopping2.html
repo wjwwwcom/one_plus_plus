@@ -1,0 +1,184 @@
+<!-- Bootstrap -->
+<link href="/plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="/plugin/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- Custom Theme Style -->
+<link href="/css/custom.min.css" rel="stylesheet">
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>OnePlus旗舰店</h3>
+            </div>
+
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                <button class="btn btn-default" type="button">Go!</button>
+              </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12 col-sm-12 text-center ">
+                        <div style="background-color:#4E6682"
+                             class="cmp__kv-banner op-lazyload homepage-left style-default cmp__animate">
+                            <img class="op-lazyload cmp__kv-banner-bg fadein op-loaded"
+                                 src="https://image01.oneplus.cn/shop/201906/27/1403/151bfc961009e115533581b61e147884.jpg"
+                                 width="1200px">
+                            <div class="cmp__kv-inner">
+                                <div class="font-headline-1 cmp__animate-btn animate delay-2 fadein"
+                                     style="color: #FFFFFF;">永不言弃，追求极致。
+                                </div>
+                                <div class="homepage-empty-line"></div>
+                                <div class="font-body-2 line cmp__animate-btn animate delay-5 fadein"
+                                     style="color: #FFFFFF;">欢迎小罗伯特·唐尼，<br> 加入 OnePlus 大家庭。
+                                </div>
+                                <div class="homepage-empty-line-2"></div>
+                                <div class="kv_btn_group cmp__animate-btn animate delay-6 fadein">
+                                </div>
+                                <div class="text-arrow icon-more cmp__animate-btn animate delay-7 fadein">
+                                    <a class="learn-more-link" href=""
+                                       track-data="TD_AEM_zh_Kv-Banner_永不言弃，追求极致。_LearnMore">
+                                        <span class="btn_text btn_white font-body-2 icon-more" style="color: #FFFFFF">前往了解</span></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel slide "
+                             data-ride="carousel"
+                             data-interval="2000">
+                            <!--data-wrap="false"-->
+                            <ol class="carousel-indicators">
+                                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                                <li data-target="#myCarousel" data-slide-to="1"></li>
+                                <li data-target="#myCarousel" data-slide-to="2"></li>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <a href="https://www.oneplus.com/cn/oneplus-8">
+                                        <img src="/images/11.png" height="300px"/>
+                                    </a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="https://www.oneplus.com/cn/oneplus-8-pro">
+                                        <img src="/images/22.png" height="300px"/>
+                                    </a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="https://www.oneplus.com/cn/oneplus-7pro">
+                                        <img src="/images/33.png" height="300px"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div id="tb">
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="col-md-12 col-sm-12  text-center">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- /page content -->
+
+<!-- jQuery -->
+<script src="/plugin/jquery/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/plugin/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="/plugin/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/plugin/nprogress/nprogress.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="/js/custom.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        load();
+    });
+
+    function load() {
+        //发送ajaxj请求
+        $.ajax({
+            url: "/goods/good",//请求地址
+            type: "get",//请求方式
+            dataType: "json",//返回的数据类型 :对象:json,字符串和数字:texte
+            success: function (data) { //响应成功需要执行的函数
+                var html = "";
+                for (var i = 0; i < data.length; i++) {
+                    var goodsId = data.goodsId;
+                    console.log(goodsId);
+                    html += "<div class='col-md-4 col-sm-4  profile_details'>" +
+                        "<div class='well profile_view'>" +
+                        "<div class='col-sm-12'>" +
+                        "<h4 class='brief'><i>OnePlus</i></h4>" +
+                        "<div class='left col-md-7 col-sm-7'>" +
+                        "<h2>" + data[i].goodsName + "</h2>" +
+                        "<p><strong>价格: </strong>" + data[i].price + "</p>" +
+                        "<ul class='list-unstyled'>" +
+                        "<li> 超大屏 超长待机 八核处理器 </li>" +
+                        "<li> 你值得拥有 </li>" +
+                        "</ul>" +
+                        "</div>" +
+                        " <div class='right col-md-5 col-sm-5 text-center'>" +
+                        "<img src='" + data[i].img + "' alt='' class='img-container img-fluid'>" +
+                        "</div>" +
+                        "</div>" +
+                        "<div class='profile-bottom text-center'>" +
+                        "<div class='col-sm-6 emphasis'>" +
+                        "</div>" +
+                        "<div class='col-sm-6 emphasis'>" +
+                        "<button type='button' class='btn btn-primary btn-sm' onclick='detailPage()'>" +
+                        "<i class='fa fa-user'> </i>立即购买</a>" +
+                        "</button>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>"
+
+                }
+                //把拼接的html变量信息显示在id=tb的标签上
+                $("#tb").html(html)
+            },
+            error: function (data) {
+                //响应失败需要的做的事情
+            }
+        })
+    }
+
+
+</script>

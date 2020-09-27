@@ -1,0 +1,169 @@
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- Meta, title, CSS, favicons, etc. -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Gentelella Alela! | </title>
+
+<!-- Bootstrap -->
+<link href="/plugin/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="/plugin/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/plugin/iCheck/skins/flat/green.css" rel="stylesheet">
+<!-- bootstrap-wysiwyg -->
+<link href="/plugin/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+<!-- Select2 -->
+<link href="/plugin/select2/dist/css/select2.min.css" rel="stylesheet">
+<!-- Switchery -->
+<link href="/plugin/switchery/dist/switchery.min.css" rel="stylesheet">
+<!-- starrr -->
+<link href="/plugin/starrr/dist/starrr.css" rel="stylesheet">
+<!-- bootstrap-daterangepicker -->
+<link href="/plugin/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+<!-- Custom Theme Style -->
+<link href="/plugin/build/css/custom.min.css" rel="stylesheet">
+<!-- 上传图片 -->
+<!--    <link rel="stylesheet" th:href="${'/plugin/fileinput/fileinput.min.css'}">-->
+
+
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>商品上架</h3>
+            </div>
+
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Form Design <small>different form elements</small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a class="dropdown-item" href="#">Settings 1</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <div style="width:100%;text-align:center">
+                            <form action="/goods/file" method="post" enctype="multipart/form-data" class="form-horizontal form-label-left">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="file">上传图片
+                                    <span class="required">*</span>
+                                </label>
+                                <label class="btn btn-secondary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+                                    <input type="file" id="file" name="file">
+                                    &nbsp;<button type="submit">上传</button>
+                                </label>
+                            </form>
+                        </div>
+                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" action="/goods/goods">
+
+                            <div class="item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="goodsName">商品名 <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input type="text" id="goodsName" name="goodsName" required="required" class="form-control ">
+                                </div>
+                            </div>
+                            <div class="item form-group">
+                                <label for="price" class="col-form-label col-md-3 col-sm-3 label-align">商品价格</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input id="price" class="form-control" type="text" name="price">
+                                </div>
+                            </div>
+                            <div class="item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="img">图片<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input type="text" id="img" name="img" required="required" class="form-control">
+                                </div>
+                            </div>
+                            <div class="ln_solid"></div>
+                            <div class="item form-group">
+                                <div class="col-md-6 col-sm-6 offset-md-3">
+                                    <button class="btn btn-primary" type="button">取消</button>
+                                    <button class="btn btn-primary" type="reset">重置</button>
+                                    <button type="submit" class="btn btn-success">上架</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+
+        <!--        &lt;!&ndash;插入修改模态框&ndash;&gt;-->
+        <!--        <div th:replace="account/profileEdit"></div>-->
+        <!-- jQuery -->
+        <script src="/plugin/jquery/dist/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="/plugin/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- FastClick -->
+        <script src="/plugin/fastclick/lib/fastclick.js"></script>
+        <!-- NProgress -->
+        <script src="/plugin/nprogress/nprogress.js"></script>
+        <!-- bootstrap-progressbar -->
+        <script src="/plugin/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+        <!-- iCheck -->
+        <script src="/plugin/iCheck/icheck.min.js"></script>
+        <!-- bootstrap-daterangepicker -->
+        <script src="/plugin/moment/min/moment.min.js"></script>
+        <script src="/plugin/bootstrap-daterangepicker/daterangepicker.js"></script>
+        <!-- bootstrap-wysiwyg -->
+        <script src="/plugin/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+        <script src="/plugin/jquery.hotkeys/jquery.hotkeys.js"></script>
+        <script src="/plugin/google-code-prettify/src/prettify.js"></script>
+        <!-- jQuery Tags Input -->
+        <script src="/plugin/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+        <!-- Switchery -->
+        <script src="/plugin/switchery/dist/switchery.min.js"></script>
+        <!-- Select2 -->
+        <script src="/plugin/select2/dist/js/select2.full.min.js"></script>
+        <!-- Parsley -->
+        <script src="/plugin/parsleyjs/dist/parsley.min.js"></script>
+        <!-- Autosize -->
+        <script src="/plugin/autosize/dist/autosize.min.js"></script>
+        <!-- jQuery autocomplete -->
+        <script src="/plugin/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+        <!-- starrr -->
+        <script src="/plugin/starrr/dist/starrr.js"></script>
+        <!-- Custom Theme Scripts -->
+        <script src="/plugin/build/js/custom.min.js"></script>
+    </div>
+</div>

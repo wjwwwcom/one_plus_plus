@@ -1,0 +1,209 @@
+<!-- import css-->
+<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" xmlns:th="http://www.w3.org/1999/xhtml">
+<!-- NProgress -->
+<link href="/plugin/nprogress/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/plugin/iCheck/skins/flat/green.css" rel="stylesheet">
+<!-- Datatables -->
+<link href="/plugin/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="/plugin/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+    td{
+        font-size: 16px;
+        display:table-cell;
+        vertical-align:middle;/*设置垂直居中*/
+    }
+</style>
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>订单 <small>订单列表</small></h3>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_content">
+
+                        <!-- start project list -->
+                        <!--  订单列表  -->
+                        <table id="datatable" class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th>订购时间</th>
+                                    <th>订单编号</th>
+                                    <th>商品名称</th>
+                                    <th>总价</th>
+                                    <th>订单状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <!-- end project list -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+
+<!-- import js-->
+<!-- FastClick -->
+<script src="/plugin/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/plugin/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="/plugin/iCheck/icheck.min.js"></script>
+<!-- Datatables -->
+<script src="/plugin/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/plugin/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/plugin/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/plugin/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/plugin/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/plugin/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/plugin/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/plugin/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/plugin/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="/plugin/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+
+
+
+<script type="text/javascript">
+    //定义默认页大小
+    var DEFAULT_PAGE_SIZE = 5;
+
+    //加载页面时执行JS代码
+    $(document).ready(function() {
+        //渲染<table>的<body>部分
+        initOrderTable(DEFAULT_PAGE_SIZE);
+    });
+
+    function initOrderTable(pageSize) {
+        $('#datatable').DataTable({
+            //设置表格相应的参数和属性
+            'paging': true, //分页
+            "serverSide": true, //开启后端分页
+            "pagingType": "full_numbers", //分页样式的类型simple/simple_numbers/full/full_numbers
+            "pageLength": pageSize, //定义初始的页长----每页显示条数
+            "processing": true,//  ----请求加载时转圈等待标志
+            "destroy": true, //允许销毁替换，在表格重新查询时，可以自动销毁以前的data ---- 增删改后自动更新
+            'lengthChange': true, //控制是否能够调整每页的条数 --- 是否显示【选择显示每页条数】
+            'searching': true, //是否显示【Search框】
+            'data-show-refresh': true, // 增删改后自动更新
+            'ordering': true, //是否显示表单上每个字段后面的【排序按钮】
+            'autoWidth': false, // 自动调整列宽
+            "ajax": function (data, callback, settings) {
+                // 从data获取查询数据
+                var columIndex = data.order[0].column;//找到列的下标
+                var sort = data.order[0].dir;//【排序的方式：升序/降序】
+                var orderBy = data.columns[columIndex].name;//根据下标找到【排序的列名】
+                //每页显示的页大小
+                pageSize = data.length == undefined  ? pageSize : data.length;
+
+                var searchVo = {};
+                searchVo.currentPage = (data.start / pageSize) + 1;//当前页码
+                searchVo.pageSize = pageSize;//页大小
+                searchVo.orderBy = orderBy;//要排序的列名
+                searchVo.sort = sort;//排序方式
+                searchVo.keyWord = data.search.value;//查询关键字
+
+                /* 修改替换时：3、修改ajax请求地址 --> */
+                $.ajax({
+                    url : "/order/getAllOrders",
+                    type : "post",
+                    contentType: "application/json",
+                    data : JSON.stringify(searchVo),
+                    success : function (rs) {
+                        //渲染表格数据结构
+                        var fData = {
+                            draw :0, //多少行
+                            recordsTotal: 0, //数据总条数
+                            recordsFiltered: 0,
+                            data: [] //当前页需要展示的数据
+                        };
+                        if (!rs) {
+                            layer.alert("请求出错，请稍后重试" + rs.errmsg, {icon: 2});
+                            callback(fData);
+                            return;
+                        };
+                        if (rs.list == null) {
+                            $('#datatable tbody tr').remove();
+                            $('#loading').remove();
+                            callback(fData);
+                            return;
+                        }
+                        $('#loading').remove();
+                        var gearDatas = [];//包装行数据
+
+                        /* 修改替换时：4、修改包装行数据 --> */
+                        for (var i = 0; i < rs.list.length; i++) {
+                            //包装行数据
+                            var rowData = new TData(rs.list[i].orderGroupId,rs.list[i].orderTime,
+                                rs.list[i].orderCode, rs.list[i].orderGroupName,
+                                rs.list[i].orderTotalPrice, rs.list[i].orderState);
+                            // 将行数据放到数组里
+                            gearDatas.push(rowData);
+                        }
+                        fData.data = gearDatas;
+                        fData.recordsTotal = rs.total;
+                        fData.recordsFiltered = rs.total;
+                        callback(fData);
+                    },
+                    error : function (data) {
+                        layer.alert(data.responseText, {icon: 0});
+                    }
+                });
+            },
+            "columns": [ //定义行数据字段
+                // date:【表单列名】,返回的数据属性，与实体类中的属性对应
+                // name: 对应数据库列名，排序的参数
+                // sortable: 是否支持排序，支持则显示排序图标，否则没有
+                {data: 'orderTime', name: "order_time", sortable: true},
+                {data: 'orderCode', name: "order_code", sortable: true},
+                {data: 'orderGroupName', name: "order_group_name", sortable: true},
+                {data: 'orderTotalPrice', name: "order_total_price", sortable: true},
+                {data: 'orderState', name: "order_state", sortable: true},
+                {data: 'operate', width: '80px', sortable: false}
+            ]
+        });
+    }
+    /* <!-- 修改替换时：2、修改行数据结构 --> */
+    //行数据结构 --- 从数据库查询展示的数据
+    function TData(orderGroupId, orderTime, orderCode, orderGroupName, orderTotalPrice, orderState) {
+        this.orderGroupId = "<input type='hidden' name='orderGroupId' value='"+orderGroupId+"'>"
+        this.orderTime = orderTime;
+        this.orderCode = "<a href='javascript:void(0);' style='color: #462cff' onclick='toDetailPage(\"" + orderCode + "\")'>"+orderCode+"</a>";
+        this.orderGroupName = orderGroupName;
+        this.orderTotalPrice = "<div class='info-rcol'><span id='payMoney'>"+parseFloat(orderTotalPrice).toFixed(2)+"</span>￥</div>";
+        this.orderState = (orderState == 0 ? "已下单": orderState == 1 ? "已发货" : "已收货");
+
+        //每行数据的操作列
+        this.operate = function () {
+            return "<a href='javascript:void(0);' onclick='toDetailPage(" + orderCode + "," + orderState + ")' class='btn_editcolor'>详情</a><br>";
+        }
+    }
+
+    function toDetailPage(orderCode, orderState){
+        // location.href = "/order/allOrderDetailPage?orderCode="+orderCode;
+        location.href = "/order/orderdetails?orderCode=" + orderCode + "&orderState=" + orderState;
+    }
+
+</script>
+
+
